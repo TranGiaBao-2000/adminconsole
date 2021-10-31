@@ -161,9 +161,11 @@ const add=()=>{
         obj.status = 'approved'
         obj.accountID = 'SE'+ (listFixer.length + 1)
         listFixer.push(obj)
+        countFixer++
     }else{
         obj.accountID = 'SE'+ (listAccount.length + 1)
         listAccount.push(obj)
+        countCustomer++
     }
 
 
