@@ -1,11 +1,13 @@
 let listAccount = [];
+let listFixer = [];
+let listApproved = [];
 let countAdmin = 1;
 let countCustomer = 0;
 let countFixer = 0;
 
-const findAccount = (id)=>{
+const findAccount = (id, list)=>{
     var result;
-    listAccount.forEach(e=>{
+    list.forEach(e=>{
         if(e.accountID === id){
             result = e;
         }
@@ -13,26 +15,43 @@ const findAccount = (id)=>{
     return result;
 }
 
-const renderData=() =>{
+const renderData=(target, list, filter) =>{
     var html = "";
 
-    listAccount.forEach(e=>{
-        html+=`
-        <tr class="${e.role === 'admin' ? 'd-none':""}">
-            <td>${e.fullname}</td>
-            <td>${e.email}</td>
-            <td>${e.phone}</td>
-            <td class="${e.role}">${e.role}</td>
-            <td >
-                    <i class="fa fa-info" aria-hidden="true" onclick="showDetail('${e.accountID}')"></i>
-                    <i class="fa fa-pencil-square-o" aria-hidden="true" onclick="showEdit('${e.accountID}')"></i>
-                    <i class="fa fa-trash-o" aria-hidden="true" onclick="deleteAcc('${e.accountID}')"></i>
-            </td>
-        </tr>
-        `;
+    list.forEach(e=>{
+        if(e.role === 'Fixer' && e.status !== 'pending' && filter !== undefined){
+
+        }else{
+            html+=`
+            <tr class="${e.role === 'admin' ? 'd-none':""}">
+                <td>${e.fullname}</td>
+                <td>${e.email}</td>
+                <td>${e.phone}</td>
+                <td class="${e.role}">${e.role}</td>
+                ${e.role === 'Fixer'?`
+                    <td class="${e.status === 'pending'?'text-warning':'text-success'}">${e.status}</td>
+                `:''}
+                ${e.role === 'Fixer' && e.status === 'pending'?`
+                
+                <td>
+                    <button class="btn btn-success" onclick="approved('${e.accountID}')">Approve</button>
+                    <button class="btn btn-danger" onclick="deleteAcc('${e.accountID}')">Deny</button>
+                </td>
+                `:`
+                
+                <td >
+                        <i class="fa fa-info" aria-hidden="true" onclick="showDetail('${e.accountID}')"></i>
+                        <i class="fa fa-pencil-square-o" aria-hidden="true" onclick="showEdit('${e.accountID}')"></i>
+                        <i class="fa fa-trash-o" aria-hidden="true" onclick="deleteAcc('${e.accountID}')"></i>
+                </td>
+                `}
+            </tr>
+            `;
+        }
+        
     });
 
-    document.getElementById('tbody').innerHTML = html;
+    document.getElementById(target).innerHTML = html;
 }
 
 const updateProcess = ()=>{
@@ -49,28 +68,28 @@ const updateProcess = ()=>{
 const init = ()=>{
     for(var i = 0; i < 10 ; i++){
         listAccount.push({
-            accountID: "SE"+i,
+            accountID: "CT"+i,
             fullname: "Name"+i,
             email: "name"+i+"@gmail.com",
             address: "address"+i,
             phone: "0912381289",
             password: "password"+i,
-            role: "Customer",
-            description: "description"
+            role: "Customer"
         });
         countCustomer++;
     }
 
-    for(var i = 10; i < 15 ; i++){
-        listAccount.push({
-            accountID: "SE"+i,
+    for(var i = 0; i < 5 ; i++){
+        listFixer.push({
+            accountID: "FX"+i,
             fullname: "Name"+i,
             email: "name"+i+"@gmail.com",
             address: "address"+i,
             phone: "0912381289",
             password: "password"+i,
             role: "Fixer",
-            description: "description"
+            description: "description",
+            status: "pending"
         });
         countFixer++;
     }
@@ -115,8 +134,13 @@ const hideForm=()=>{
     updateProcess();
 }
 
-const showAdd=()=>{
+const showAdd=(title)=>{
     document.getElementById('button').style.display = "flex";
+    if(title === 'customer'){
+        document.getElementById('des').style.display = "none";
+    }else{
+        document.getElementById('des').style.display = "block";
+    }
     document.getElementById('button').innerHTML = `<button id='update' onclick="add()">Add</button>`
     showForm();
     
@@ -125,6 +149,7 @@ const showAdd=()=>{
 const add=()=>{
     var obj = {};
 
+
     obj.fullname =document.getElementById('fullname').value
     obj.email= document.getElementById('email').value 
     obj.address = document.getElementById('address').value
@@ -132,11 +157,23 @@ const add=()=>{
     obj.password = document.getElementById('password').value
     obj.description = document.getElementById('description').value
     obj.role = document.getElementById('role').value
+    if(obj.role==='Fixer'){
+        obj.status = 'approved'
+        obj.accountID = 'SE'+ (listFixer.length + 1)
+        listFixer.push(obj)
+    }else{
+        obj.accountID = 'SE'+ (listAccount.length + 1)
+        listAccount.push(obj)
+    }
 
-    listAccount.push(obj)
+
     swal("Notification", "Create successfully!", "success");
     hideForm();
-    renderData();
+    if(obj.role === "Fixer"){
+        renderData('tbody-fixer',listFixer);
+    }else{
+        renderData('tbody',listAccount);
+    }
     if(obj.role === "Fixer"){
         countFixer++;
     }else{
@@ -145,20 +182,41 @@ const add=()=>{
 }
 
 const showDetail=(id)=>{
-    renderDataForm(findAccount(id));
+    var obj = findAccount(id,listAccount);
+    if(!obj){
+        obj= findAccount(id,listFixer);
+    }
+    renderDataForm(obj);
     document.getElementById('button').style.display = "none";
+    if(obj.role === "Customer"){
+        document.getElementById('des').style.display = "none";
+    }else{
+        document.getElementById('des').style.display = "block";
+    }
     showForm();
 }
 
 const showEdit=(id)=>{
-    renderDataForm(findAccount(id));
+    var obj = findAccount(id,listAccount);
+    if(!obj){
+        obj= findAccount(id,listFixer);
+    }
+    renderDataForm(obj);
+    if(obj.role === "Customer"){
+        document.getElementById('des').style.display = "none";
+    }else{
+        document.getElementById('des').style.display = "block";
+    }
     document.getElementById('button').style.display = "flex";
     document.getElementById('button').innerHTML = `<button id='update' onclick="edit('${id}')">Update</button>`
     showForm();
 }
 
 const edit=(id)=>{
-    var obj = findAccount(id);
+    var obj = findAccount(id,listAccount);
+    if(!obj){
+        obj= findAccount(id,listFixer);
+    }
 
     obj.fullname =document.getElementById('fullname').value
     obj.email= document.getElementById('email').value 
@@ -168,14 +226,20 @@ const edit=(id)=>{
     obj.description = document.getElementById('description').value
     obj.role = document.getElementById('role').value
     swal("Notification", "Update successfully!", "success");
-    renderData();
+    if(obj.role === "Fixer"){
+        renderData('tbody-fixer',listFixer);
+    }else{
+        renderData('tbody',listAccount);
+    }
     hideForm();
 }
 
 
 const deleteAcc = (id)=>{
-    var obj = findAccount(id);
-
+    var obj = findAccount(id,listAccount);
+    if(!obj){
+        obj= findAccount(id,listFixer);
+    }
 
     swal({
         title: "Are you sure?",
@@ -186,14 +250,18 @@ const deleteAcc = (id)=>{
       })
       .then((willDelete) => {
         if (willDelete) {
-            listAccount.splice(listAccount.indexOf(obj), 1);
+            
             swal("Notification", "Delete successfully!", "success");
-            renderData();
             
             if(obj.role === "Fixer"){
+                listFixer.splice(listFixer.indexOf(obj), 1);
                 countFixer--;
+                renderData('tbody-fixer',listFixer);
+                console.log(listFixer.length);
             }else{
+                listAccount.splice(listAccount.indexOf(obj), 1);
                 countCustomer--;
+                renderData('tbody',listAccount);
             }
             updateProcess();
         }
@@ -201,8 +269,28 @@ const deleteAcc = (id)=>{
 
 }
 
+const showTab=(item, tab)=>{
+    var list = document.getElementsByClassName('active')
+    var listTab = document.getElementsByClassName('tab')
+    list[0].classList.remove('active');
+    document.getElementById(item).classList.add("active");
+
+   for (let i = 0; i < listTab.length; i++) {
+       const element = listTab[i];
+       element.classList.add('d-none')
+   }
+    document.getElementById(tab).classList.remove("d-none");
+}
+
+const approved=(id)=>{
+    var obj = findAccount(id,listFixer);
+    obj.status = 'approved';
+    renderData('tbody-fixer',listFixer);
+}
+
 
 init();
 updateProcess();
-renderData();
+renderData('tbody',listAccount);
+renderData('tbody-fixer',listFixer,'pending');
 console.log(listAccount);

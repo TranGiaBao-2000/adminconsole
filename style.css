@@ -98,7 +98,8 @@
   font-size: 13px;
 }
 
-.right .user {
+.right .user,
+.fixer {
   width: 100%;
   height: 100%;
   max-height: 100%;
@@ -138,9 +139,10 @@
 }
 
 .all-user-left {
-  width: 80%;
+  width: 100%;
   background-color: #fff;
   padding: 30px 100px;
+  margin-top: 70px;
 }
 
 .all-user-left .process {
@@ -214,11 +216,12 @@
   padding: 5px;
 }
 .form-real .row {
-  margin: 10px 0;
+  margin: 15px 0;
 }
 
 .form-real p {
   font-size: 15px;
+  font-weight: 700;
 }
 
 .form-real .button {
@@ -251,24 +254,29 @@
   margin-top: 20px;
 }
 
-.content .data i {
+.content .data i,
+.data-fixer i {
   cursor: pointer;
   transition: all 0.3s;
 }
 
-.content .data i:nth-child(2) {
+.content .data i:nth-child(2),
+.data-fixer i:nth-child(2) {
   margin: 0 9px;
 }
 
-.content .data i:first-child:hover {
+.content .data i:first-child:hover,
+.data-fixer i:first-child:hover {
   color: blue;
 }
 
-.content .data i:nth-child(2):hover {
+.content .data i:nth-child(2):hover,
+.data-fixer i:nth-child(2):hover {
   color: green;
 }
 
-.content .data i:last-child:hover {
+.content .data i:last-child:hover,
+.data-fixer i:last-child:hover {
   color: red;
 }
 

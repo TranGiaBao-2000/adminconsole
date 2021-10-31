@@ -19,17 +19,29 @@
       <div class="left">
         <h1>Admin Console</h1>
         <div class="list-item">
-          <div class="item active">
+          <div
+            class="item active"
+            onclick="showTab('home-item','home')"
+            id="home-item"
+          >
             <i class="fa fa-user" aria-hidden="true"></i>
-            User Manager
+            Home
           </div>
-          <div class="item">
+          <div
+            class="item"
+            onclick="showTab('customer-item','user')"
+            id="customer-item"
+          >
             <i class="fa fa-user" aria-hidden="true"></i>
-            Tab 1
+            Customer
           </div>
-          <div class="item">
+          <div
+            class="item"
+            onclick="showTab('fixer-item','fixer-tab')"
+            id="fixer-item"
+          >
             <i class="fa fa-user" aria-hidden="true"></i>
-            Tab 2
+            Fixer
           </div>
         </div>
       </div>
@@ -44,40 +56,48 @@
           <span>Admin</span>
           <i class="fa fa-sign-out" aria-hidden="true"></i>
         </div>
-        <div class="user">
-          <div class="content">
-            <div class="all-user">
-              <div class="all-user-left">
-                <div class="item">
-                  <p>All User <span id="allUserCount">(30)</span></p>
-                  <div class="process">
-                    <div class="value" id="all"></div>
-                  </div>
-                </div>
-                <div class="item">
-                  <p>Admin<span id="adminCount">(30)</span></p>
-                  <div class="process">
-                    <div class="value" id="admin"></div>
-                  </div>
-                </div>
-                <div class="item">
-                  <p>Fixer<span id="fixerCount">(30)</span></p>
-                  <div class="process">
-                    <div class="value" id="fixer"></div>
-                  </div>
-                </div>
-                <div class="item">
-                  <p>Customer<span id="customerCount">(30)</span></p>
-                  <div class="process">
-                    <div class="value" id="customer"></div>
-                  </div>
+
+        <div class="home tab" id="home">
+          <h1 class="display-4 text-center mt-3">Welcome to admin console</h1>
+          <div class="all-user">
+            <div class="all-user-left">
+              <div class="item">
+                <p>All User <span id="allUserCount">(30)</span></p>
+                <div class="process">
+                  <div class="value" id="all"></div>
                 </div>
               </div>
-              <div class="all-user-right">
-                <button onclick="showAdd()">Add User</button>
+              <div class="item">
+                <p>Admin<span id="adminCount">(30)</span></p>
+                <div class="process">
+                  <div class="value" id="admin"></div>
+                </div>
+              </div>
+              <div class="item">
+                <p>Fixer<span id="fixerCount">(30)</span></p>
+                <div class="process">
+                  <div class="value" id="fixer"></div>
+                </div>
+              </div>
+              <div class="item">
+                <p>Customer<span id="customerCount">(30)</span></p>
+                <div class="process">
+                  <div class="value" id="customer"></div>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
 
+        <div class="user tab d-none" id="user">
+          <div class="content">
+            <h1 class="display-4 text-center">Customer Management</h1>
+            <button
+              class="btn btn-primary col-12"
+              onclick="showAdd('customer')"
+            >
+              Add new customer
+            </button>
             <div class="data">
               <table class="table table-hover text-center">
                 <thead>
@@ -88,6 +108,28 @@
                   <th>Action</th>
                 </thead>
                 <tbody id="tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="fixer tab d-none" id="fixer-tab">
+          <div class="content">
+            <h1 class="display-4 text-center">Fixer Management</h1>
+            <button class="btn btn-primary col-12 my-3" onclick="showAdd()">
+              Add new Fixer
+            </button>
+            <div class="data-fixer">
+              <table class="table table-hover text-center">
+                <thead>
+                  <th>Fullname</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </thead>
+                <tbody id="tbody-fixer"></tbody>
               </table>
             </div>
           </div>
@@ -117,8 +159,8 @@
           <p>Password:</p>
           <input type="password" id="password" />
         </div>
-        <div class="row">
-          <p>Password:</p>
+        <div class="row" id="des">
+          <p>Description:</p>
           <textarea name="" id="description" cols="5" rows="4"></textarea>
         </div>
         <div class="row">
